@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.yasserahmed.stockmartbakala.R;
+import com.example.yasserahmed.stockmartbakala.Retrofit_get_Notifications.Notification_item_class;
 
 import java.util.ArrayList;
 
@@ -18,11 +19,11 @@ import java.util.ArrayList;
 
 public class Notifications_Adapters extends RecyclerView.Adapter<Notifications_Adapters.NotificViewHolder> {
 
-    private ArrayList<Notifications_class> notifications_classes;
+    private ArrayList<Notification_item_class> notifications_classes;
     private  int rowLayout;
     Context context;
 
-    public Notifications_Adapters(ArrayList<Notifications_class> notifications_classes, int rowLayout, Context context) {
+    public Notifications_Adapters(ArrayList<Notification_item_class> notifications_classes, int rowLayout, Context context) {
         this.notifications_classes = notifications_classes;
         this.rowLayout = rowLayout;
         this.context = context;
@@ -39,10 +40,10 @@ public class Notifications_Adapters extends RecyclerView.Adapter<Notifications_A
         if (position==0){
             holder.notif_background.setBackgroundResource(R.mipmap.notf_item_background);
         }
-       
-        holder.txt1.setText(notifications_classes.get(position).getOffer());
-        holder.txt2.setText(notifications_classes.get(position).getDetails());
-        holder.txt3.setText(notifications_classes.get(position).getTime());
+
+        holder.txt1.setText(notifications_classes.get(position).getTitle_ar());
+        holder.txt2.setText(notifications_classes.get(position).getBody_ar());
+        holder.txt3.setText(notifications_classes.get(position).getCreated_at());
     }
 
     @Override

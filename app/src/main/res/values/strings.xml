@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">StockMart Bakala</string>
+    <string name="location_name">location name...</string>
+    <string name="location_kind">Location kind</string>
+    <string name="more_details">add more details...</string>
+    <string-array name="location_name">
+        <item>location 1</item>
+        <item>location 2</item>
+        <item>location 3</item>
+        <item>location 4</item>
+    </string-array>
+    <string name="title_activity_maps">Map</string>
+    <string name="add_new_address">add new Address</string>
+    <string name="add_address">Add Address</string>
+    <string name="edit_location_name_error">please add location name</string>
+    <string name="location_added">your location added successfully</string>
 </resources>

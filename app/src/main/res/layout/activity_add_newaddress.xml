@@ -3,22 +3,122 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray"
+
     android:orientation="vertical"
-    android:layout_height="match_parent"
     tools:context="com.example.yasserahmed.stockmartbakala.AddNewaddress">
-<fragment
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_weight="1"
-    ></fragment>
+
     <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="80dp"
+
+        android:background="@drawable/location_background">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/back_button" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="20dp"
+                android:text="@string/add_new_address"
+                android:textColor="@color/white"
+                android:textSize="15dp" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/addrmap"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context="com.example.yasserahmed.stockmartbakala.MapsActivity" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:background="@color/gray"
-        android:layout_height="match_parent">
-      <LinearLayout
-          android:layout_width="match_parent"
+        android:orientation="vertical">
 
-          android:layout_height="wrap_content"></LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            android:orientation="vertical"
+            android:background="@drawable/backgroundwhite">
+            <Spinner
+                android:id="@+id/spinner_loc_kind"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+              ></Spinner>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            android:background="@drawable/backgroundwhite">
+
+            <EditText
+                android:id="@+id/edit_location_name"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@android:color/transparent"
+                android:hint="@string/location_name" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:background="@drawable/backgroundwhite">
+
+            <EditText
+                android:id="@+id/edit_add_more_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:gravity="left"
+                android:hint="@string/more_details" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_margin="6dp"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/add_address"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:background="@drawable/location_background"
+            android:onClick="call_add_address"
+            android:text="@string/add_address" />
     </LinearLayout>
 </LinearLayout>
