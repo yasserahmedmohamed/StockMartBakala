@@ -12,6 +12,10 @@
     <string name="title_activity_maps">Map</string>
     <string name="add_new_address">add new Address</string>
     <string name="add_address">Add Address</string>
-    <string name="edit_location_name_error">please add location name</string>
+    <string name="edit_location_name_error">please add it</string>
     <string name="location_added">your location added successfully</string>
+    <string name="complain_added">your Complaint added successfully</string>
+    <string name="loading_please_wait">Please wait...</string>
+    <string name="order_number">Order Number</string>
+    <string name="preparing">Preparing, please wait</string>
 </resources>

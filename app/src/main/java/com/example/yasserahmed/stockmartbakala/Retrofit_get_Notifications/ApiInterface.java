@@ -17,6 +17,17 @@ public interface ApiInterface {
 
     @POST("add_address")
     Call<Success_return> is_successcall(@Query("user_id") int user_id,
-                                        @Query("address_type_id")int address_type_id,@Query("address")String address,@Query("notes")String notes);
+                                        @Query("address_type_id") int address_type_id,
+                                        @Query("address") String address,
+                                        @Query("notes") String notes);
+
+
+    @POST("complains")
+    Call<Success_return> add_complaint(@Query("order_id") int order_id,
+                                       @Query("client_id") int client_id,
+                                       @Query("name") String name,
+                                       @Query("mobile") String mobile,
+                                       @Query("email") String email,
+                                       @Query("complain") String complain);
 
 }

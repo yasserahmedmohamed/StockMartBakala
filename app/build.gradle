@@ -39,4 +39,8 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.0.2'
     //maps
     compile 'com.google.android.gms:play-services-maps:11.8.0'
+
+    //loading library
+    compile 'com.wang.avi:library:2.1.3'
+
 }
