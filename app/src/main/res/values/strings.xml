@@ -18,4 +18,8 @@
     <string name="loading_please_wait">Please wait...</string>
     <string name="order_number">Order Number</string>
     <string name="preparing">Preparing, please wait</string>
+    <string name="pull">Pull</string>
+    <string name="cost">The Cost</string>
+    <string name="cash">The Cash</string>
+    <string name="immediate">Immediate</string>
 </resources>

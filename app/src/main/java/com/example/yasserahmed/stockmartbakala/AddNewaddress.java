@@ -15,11 +15,13 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.provider.Settings;
+import android.service.notification.StatusBarNotification;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
@@ -28,6 +30,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.yasserahmed.stockmartbakala.Retrofit_get_Notifications.ApiInterface;
@@ -40,6 +43,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.jaeger.library.StatusBarUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,27 +60,32 @@ public class AddNewaddress extends AppCompatActivity implements OnMapReadyCallba
     EditText edit_location_name;
     EditText edit_add_more_details;
     Context context;
-   // ProgressDialog progressDialog;
+    double lat, lng;
+    // ProgressDialog progressDialog;
     public static final int MY_PERMISSIONS_REQUEST_GET_LOCATION = 1,
-                            MY_PERMISSIONS_REQUEST_START_GPS = 2;
+            MY_PERMISSIONS_REQUEST_START_GPS = 2;
     private GoogleMap mMap;
     SupportMapFragment mapFragment;
     Activity activity;
     int address_type;
+    AlertDialog.Builder alertDialog;
+    DialogInterface dialogif;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_newaddress);
+        StatusBarUtil.setTransparent(AddNewaddress.this);
 
         initialize();
 
-        address_type=0;
+        address_type = 0;
 
         spinner_loc_kind.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                address_type=i;
+                address_type = i;
 
 
             }
@@ -96,18 +105,21 @@ public class AddNewaddress extends AppCompatActivity implements OnMapReadyCallba
         spinner_loc_kind.setAdapter(adapter);
 
 
-
     }
 
     public void CheckGpsStatus() {
 
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
+        assert locationManager != null;
         boolean GpsStatus = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         if (!GpsStatus) {
 
             showSettingsAlert();
+        } else {
+            mapFragment.getMapAsync(this);
+
         }
 
     }
@@ -115,9 +127,15 @@ public class AddNewaddress extends AppCompatActivity implements OnMapReadyCallba
     void initialize() {
         context = this;
         activity = this;
+
+        Toolbar customToolbar = findViewById(R.id.c_toolbar);
+        setSupportActionBar(customToolbar);
+        TextView tv_appBarTitl = findViewById(R.id.appBarTitle);
+        tv_appBarTitl.setText(R.string.add_new_address);
         spinner_loc_kind = (Spinner) findViewById(R.id.spinner_loc_kind);
         edit_location_name = (EditText) findViewById(R.id.edit_location_name);
         edit_add_more_details = (EditText) findViewById(R.id.edit_add_more_details);
+        dialogif = null;
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.addrmap);
 
@@ -131,8 +149,7 @@ public class AddNewaddress extends AppCompatActivity implements OnMapReadyCallba
                         MY_PERMISSIONS_REQUEST_GET_LOCATION);
             }
         } else {
-            mapFragment.getMapAsync(this);
-
+            CheckGpsStatus();
         }
 
     }
@@ -140,9 +157,8 @@ public class AddNewaddress extends AppCompatActivity implements OnMapReadyCallba
     @Override
     protected void onResume() {
         super.onResume();
+        initialize();
         add_spin_item();
-        CheckGpsStatus();
-
 
     }
 
@@ -151,14 +167,15 @@ public class AddNewaddress extends AppCompatActivity implements OnMapReadyCallba
         super.onRestart();
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.addrmap);
-        mapFragment.getMapAsync(this);
-        CheckGpsStatus();
+
 
 
     }
 
+
+
     public void showSettingsAlert() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+        alertDialog = new AlertDialog.Builder(context);
 
         alertDialog.setTitle("GPS is settings");
 
@@ -172,29 +189,39 @@ public class AddNewaddress extends AppCompatActivity implements OnMapReadyCallba
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 startActivityForResult(intent, MY_PERMISSIONS_REQUEST_START_GPS);
+          //      dialogif.cancel();
+
             }
         });
 
         alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
+                dialogif = dialog;
                 dialog.cancel();
             }
         });
 
         alertDialog.show();
+
     }
 
     public Location getmyLatlang() {
 
-        Location lastlocation;
+        Location lastlocation = null;
 
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
         }
-        lastlocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+        if (locationManager != null) {
+            lastlocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        }
         if (lastlocation == null)
-            lastlocation = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+            if (locationManager != null) {
+                lastlocation = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+            }
+
 
         return lastlocation;
     }
@@ -243,11 +270,20 @@ public class AddNewaddress extends AppCompatActivity implements OnMapReadyCallba
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == MY_PERMISSIONS_REQUEST_START_GPS) {
-            CheckGpsStatus();
-
-
+            String provider = Settings.Secure.getString(getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+            if (provider != null) {
+                if (dialogif != null) {
+                    dialogif.cancel();
+                }
+                getmyLatlang();
+            } else {
+                CheckGpsStatus();
+            }
         }
+
+
     }
+
 
     GoogleMap googleMap;
 
@@ -265,7 +301,10 @@ public class AddNewaddress extends AppCompatActivity implements OnMapReadyCallba
         final Location curent_location = getmyLatlang();
         if (curent_location != null || mMap != null) {
             LatLng your_location = new LatLng(curent_location.getLatitude(), curent_location.getLongitude());
+            lat = curent_location.getLatitude();
+            lng = curent_location.getLongitude();
             marker = new MarkerOptions().position(your_location).title(GetLocalityName(your_location.latitude, your_location.longitude));
+
             mMap.moveCamera(CameraUpdateFactory.newLatLng(your_location));
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(curent_location.getLatitude(), curent_location.getLongitude()), 12.0f));
             mMap.addMarker(marker);
@@ -276,6 +315,8 @@ public class AddNewaddress extends AppCompatActivity implements OnMapReadyCallba
                     marker = new MarkerOptions().position(latLng).title(GetLocalityName(latLng.latitude, latLng.longitude));
 
                     mMap.addMarker(marker);
+                    lat = latLng.latitude;
+                    lng = latLng.longitude;
 
                 }
             });
@@ -289,20 +330,26 @@ public class AddNewaddress extends AppCompatActivity implements OnMapReadyCallba
         String string_add_more_details = edit_add_more_details.getText().toString();
 
 
+        if (TextUtils.isEmpty(string_add_more_details) || string_add_more_details.equals(" ")) {
+          string_add_more_details="no comment";
+        }
         if (TextUtils.isEmpty(string_location_name) || string_location_name.equals(" ")) {
             edit_location_name.setError(getString(R.string.edit_location_name_error));
             edit_location_name.requestFocus();
         }
-
-
-
+else {
+            progressDialog = ProgressDialog.show(activity,"",activity.getString(R.string.loading_please_wait), true);
+            progressDialog.setCancelable(false);
+            progressDialog.show();
 
         ApiInterface apiInterface = GetApi.getData().create(ApiInterface.class);
 
-        Call<Success_return> Calls = apiInterface.is_successcall(1, address_type, string_location_name, string_add_more_details);
+        Call<Success_return> Calls = apiInterface.Add_new_address(1, address_type, string_location_name, string_add_more_details, lat, lng);
         Calls.enqueue(new Callback<Success_return>() {
             @Override
             public void onResponse(Call<Success_return> call, Response<Success_return> response) {
+                progressDialog.dismiss();
+
                 Toast.makeText(context, getString(R.string.location_added)
                         , Toast.LENGTH_SHORT).show();
             }
@@ -315,5 +362,6 @@ public class AddNewaddress extends AppCompatActivity implements OnMapReadyCallba
         });
 
 
+    }
     }
 }

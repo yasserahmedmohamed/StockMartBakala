@@ -1,5 +1,6 @@
 package com.example.yasserahmed.stockmartbakala.Retrofit_get_Notifications;
 
+import com.example.yasserahmed.stockmartbakala.Addresses.Addresses;
 import com.example.yasserahmed.stockmartbakala.Success_return;
 
 import retrofit2.Call;
@@ -16,10 +17,12 @@ public interface ApiInterface {
     Call<Notification_Responce> getAllNotifications();
 
     @POST("add_address")
-    Call<Success_return> is_successcall(@Query("user_id") int user_id,
+    Call<Success_return> Add_new_address(@Query("user_id") int user_id,
                                         @Query("address_type_id") int address_type_id,
                                         @Query("address") String address,
-                                        @Query("notes") String notes);
+                                        @Query("notes") String notes,
+                                         @Query("lat")double lat,
+                                         @Query("lng")double lng);
 
 
     @POST("complains")
@@ -29,5 +32,8 @@ public interface ApiInterface {
                                        @Query("mobile") String mobile,
                                        @Query("email") String email,
                                        @Query("complain") String complain);
+
+    @POST("get_addresses")
+    Call<Addresses> get_addresses(@Query("user_id") int user_id);
 
 }
