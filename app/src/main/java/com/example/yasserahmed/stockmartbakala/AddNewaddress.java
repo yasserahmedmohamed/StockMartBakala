@@ -40,6 +40,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -97,6 +98,7 @@ public class AddNewaddress extends AppCompatActivity implements OnMapReadyCallba
 
     }
 
+    //add items to spinner
     public void add_spin_item() {
 
         String[] spin_items = getResources().getStringArray(R.array.location_name);
@@ -107,6 +109,7 @@ public class AddNewaddress extends AppCompatActivity implements OnMapReadyCallba
 
     }
 
+    //see if gps is working or not
     public void CheckGpsStatus() {
 
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
@@ -124,6 +127,7 @@ public class AddNewaddress extends AppCompatActivity implements OnMapReadyCallba
 
     }
 
+    //initialize and tied to XML
     void initialize() {
         context = this;
         activity = this;
@@ -157,7 +161,6 @@ public class AddNewaddress extends AppCompatActivity implements OnMapReadyCallba
     @Override
     protected void onResume() {
         super.onResume();
-        initialize();
         add_spin_item();
 
     }
@@ -169,32 +172,30 @@ public class AddNewaddress extends AppCompatActivity implements OnMapReadyCallba
                 .findFragmentById(R.id.addrmap);
 
 
-
     }
 
-
-
+//show alert to ask for open GPS
     public void showSettingsAlert() {
         alertDialog = new AlertDialog.Builder(context);
 
-        alertDialog.setTitle("GPS is settings");
+        alertDialog.setTitle(R.string.gps_setting);
 
         // Setting Dialog Message
-        alertDialog.setMessage("GPS is not enabled. Do you want to go to settings menu?");
+        alertDialog.setMessage(R.string.open_gps_setting);
 
         // Setting Icon to Dialog
         //alertDialog.setIcon(R.drawable.delete);
 
-        alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+        alertDialog.setPositiveButton(R.string.setting, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 startActivityForResult(intent, MY_PERMISSIONS_REQUEST_START_GPS);
-          //      dialogif.cancel();
+                //      dialogif.cancel();
 
             }
         });
 
-        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        alertDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialogif = dialog;
                 dialog.cancel();
@@ -205,6 +206,7 @@ public class AddNewaddress extends AppCompatActivity implements OnMapReadyCallba
 
     }
 
+    //get latitude , longtiude of current location
     public Location getmyLatlang() {
 
         Location lastlocation = null;
@@ -226,6 +228,7 @@ public class AddNewaddress extends AppCompatActivity implements OnMapReadyCallba
         return lastlocation;
     }
 
+    // get location name of latitude , longtiude of current location
     public String GetLocalityName(double lat, double lng) {
 
 
@@ -243,7 +246,7 @@ public class AddNewaddress extends AppCompatActivity implements OnMapReadyCallba
             add = add + "\n" + obj.getAdminArea();
             add = add + "\n" + obj.getCountryName();
         } else {
-            Toast.makeText(context, "There is no Internet connection", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.no_internet, Toast.LENGTH_SHORT).show();
         }
 
         return add;
@@ -275,9 +278,10 @@ public class AddNewaddress extends AppCompatActivity implements OnMapReadyCallba
                 if (dialogif != null) {
                     dialogif.cancel();
                 }
-                getmyLatlang();
+                mapFragment.getMapAsync(this);
+
             } else {
-                CheckGpsStatus();
+                Toast.makeText(context, R.string.we_cant_get_loc, Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -286,7 +290,7 @@ public class AddNewaddress extends AppCompatActivity implements OnMapReadyCallba
 
 
     GoogleMap googleMap;
-
+//start showing map
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
@@ -295,18 +299,21 @@ public class AddNewaddress extends AppCompatActivity implements OnMapReadyCallba
     }
 
     MarkerOptions marker;
-
+// move to current location
     public void MovetoLocation() {
         mMap = googleMap;
         final Location curent_location = getmyLatlang();
         if (curent_location != null || mMap != null) {
+
             LatLng your_location = new LatLng(curent_location.getLatitude(), curent_location.getLongitude());
             lat = curent_location.getLatitude();
             lng = curent_location.getLongitude();
             marker = new MarkerOptions().position(your_location).title(GetLocalityName(your_location.latitude, your_location.longitude));
+                            marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
 
             mMap.moveCamera(CameraUpdateFactory.newLatLng(your_location));
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(curent_location.getLatitude(), curent_location.getLongitude()), 12.0f));
+
             mMap.addMarker(marker);
             mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                 @Override
@@ -323,6 +330,7 @@ public class AddNewaddress extends AppCompatActivity implements OnMapReadyCallba
         }
     }
 
+    // save data calling api
     public void call_add_address(View view) {
 
         edit_location_name.setError(null);
@@ -331,37 +339,36 @@ public class AddNewaddress extends AppCompatActivity implements OnMapReadyCallba
 
 
         if (TextUtils.isEmpty(string_add_more_details) || string_add_more_details.equals(" ")) {
-          string_add_more_details="no comment";
+            string_add_more_details = "no comment";
         }
         if (TextUtils.isEmpty(string_location_name) || string_location_name.equals(" ")) {
             edit_location_name.setError(getString(R.string.edit_location_name_error));
             edit_location_name.requestFocus();
-        }
-else {
-            progressDialog = ProgressDialog.show(activity,"",activity.getString(R.string.loading_please_wait), true);
+        } else {
+            progressDialog = ProgressDialog.show(activity, "", activity.getString(R.string.loading_please_wait), true);
             progressDialog.setCancelable(false);
             progressDialog.show();
 
-        ApiInterface apiInterface = GetApi.getData().create(ApiInterface.class);
+            ApiInterface apiInterface = GetApi.getData().create(ApiInterface.class);
 
-        Call<Success_return> Calls = apiInterface.Add_new_address(1, address_type, string_location_name, string_add_more_details, lat, lng);
-        Calls.enqueue(new Callback<Success_return>() {
-            @Override
-            public void onResponse(Call<Success_return> call, Response<Success_return> response) {
-                progressDialog.dismiss();
+            Call<Success_return> Calls = apiInterface.Add_new_address(1, address_type, string_location_name, string_add_more_details, lat, lng);
+            Calls.enqueue(new Callback<Success_return>() {
+                @Override
+                public void onResponse(Call<Success_return> call, Response<Success_return> response) {
+                    progressDialog.dismiss();
 
-                Toast.makeText(context, getString(R.string.location_added)
-                        , Toast.LENGTH_SHORT).show();
-            }
+                    Toast.makeText(context, getString(R.string.location_added)
+                            , Toast.LENGTH_SHORT).show();
+                }
 
-            @Override
-            public void onFailure(Call<Success_return> call, Throwable t) {
-                Toast.makeText(context, "there is problem", Toast.LENGTH_SHORT).show();
+                @Override
+                public void onFailure(Call<Success_return> call, Throwable t) {
+                    Toast.makeText(context, R.string.problem_get_loc, Toast.LENGTH_SHORT).show();
 
-            }
-        });
+                }
+            });
 
 
-    }
+        }
     }
 }

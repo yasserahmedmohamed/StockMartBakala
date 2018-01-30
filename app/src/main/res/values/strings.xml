@@ -22,4 +22,13 @@
     <string name="cost">The Cost</string>
     <string name="cash">The Cash</string>
     <string name="immediate">Immediate</string>
+    <string name="no_internet">There is no Internet connection</string>
+    <string name="gps_setting">GPS is settings</string>
+    <string name="open_gps_setting">GPS is not enabled. Do you want to go to settings menu?</string>
+    <string name="setting">Settings</string>
+    <string name="cancel">Cancel</string>
+    <string name="problem_get_loc">there is problem</string>
+    <string name="we_cant_get_loc">your location is Blocked</string>
+    <string name="problem_get_name_loc">There is no problem with local</string>
+    <string name="try_again">there is problem please try again</string>
 </resources>
