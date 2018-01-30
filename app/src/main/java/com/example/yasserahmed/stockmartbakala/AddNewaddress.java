@@ -77,10 +77,12 @@ public class AddNewaddress extends AppCompatActivity implements OnMapReadyCallba
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_newaddress);
+       ///////////////////////
         StatusBarUtil.setTransparent(AddNewaddress.this);
-
+        TextView tv_appBarTitl = findViewById(R.id.appBarTitle);
+        tv_appBarTitl.setText(R.string.add_new_address);
         initialize();
-
+        ///////////
         address_type = 0;
 
         spinner_loc_kind.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -134,8 +136,7 @@ public class AddNewaddress extends AppCompatActivity implements OnMapReadyCallba
 
         Toolbar customToolbar = findViewById(R.id.c_toolbar);
         setSupportActionBar(customToolbar);
-        TextView tv_appBarTitl = findViewById(R.id.appBarTitle);
-        tv_appBarTitl.setText(R.string.add_new_address);
+
         spinner_loc_kind = (Spinner) findViewById(R.id.spinner_loc_kind);
         edit_location_name = (EditText) findViewById(R.id.edit_location_name);
         edit_add_more_details = (EditText) findViewById(R.id.edit_add_more_details);
